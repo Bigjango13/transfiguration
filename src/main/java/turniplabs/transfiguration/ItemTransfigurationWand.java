@@ -23,10 +23,13 @@ public class ItemTransfigurationWand extends Item {
             world.markBlockAsNeedsUpdate(i, j, k);
             world.notifyBlocksOfNeighborChange(i, j, k, id);
             return true;
-        } else {
+        }
+        if (block.renderAsNormalBlock()) {
             itemstack.tag.setInteger("BlockId", id);
             return true;
         }
+
+        return false;
     }
 
     public void spawnStarParticle(World world, int i, int j, int k) {
