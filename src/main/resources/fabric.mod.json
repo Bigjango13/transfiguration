@@ -22,7 +22,7 @@
     ]
   },
   "mixins": [
-      "examplemod.mixins.json"
+      "transfiguration.mixins.json"
   ],
 
   "depends": {
