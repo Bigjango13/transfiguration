@@ -1,6 +1,7 @@
 package turniplabs.transfiguration;
 
 import net.minecraft.src.*;
+import org.lwjgl.input.Keyboard;
 
 public class ItemColorWand extends Item {
     public ItemColorWand(int i) {
@@ -15,13 +16,19 @@ public class ItemColorWand extends Item {
 
         if (block instanceof BlockMagicSand) {
             TileEntityMagicSand tileEntity = (TileEntityMagicSand) world.getBlockTileEntity(i, j, k);
-            tileEntity.blockColor = itemstack.tag.getInteger("BlockColor");
-            for (int a = 0; a < 10; ++a) {
-                spawnStarParticle(world, i, j, k);
+
+            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                itemstack.tag.setInteger("BlockColor", tileEntity.blockColor);
+            } else {
+                tileEntity.blockColor = itemstack.tag.getInteger("BlockColor");
+                for (int a = 0; a < 10; ++a) {
+                    spawnStarParticle(world, i, j, k);
+                }
+                world.playSoundEffect(i+.5, j+.5, k+.5, "step.snow", 1f, 1f);
+                world.markBlockAsNeedsUpdate(i, j, k);
+                world.notifyBlocksOfNeighborChange(i, j, k, id);
             }
-            world.playSoundEffect(i+.5, j+.5, k+.5, "step.snow", 1f, 1f);
-            world.markBlockAsNeedsUpdate(i, j, k);
-            world.notifyBlocksOfNeighborChange(i, j, k, id);
+
             return true;
         } else {
             itemstack.tag.setInteger("BlockColor", block.colorMultiplier(world, world, i, j, k));

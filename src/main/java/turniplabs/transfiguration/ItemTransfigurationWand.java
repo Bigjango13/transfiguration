@@ -1,6 +1,10 @@
 package turniplabs.transfiguration;
 
 import net.minecraft.src.*;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.event.KeyEvent;
 
 public class ItemTransfigurationWand extends Item {
     public ItemTransfigurationWand(int i) {
@@ -15,13 +19,19 @@ public class ItemTransfigurationWand extends Item {
 
         if (block instanceof BlockMagicSand) {
             TileEntityMagicSand tileEntity = (TileEntityMagicSand) world.getBlockTileEntity(i, j, k);
-            tileEntity.blockId = itemstack.tag.getInteger("BlockId");
-            for (int a = 0; a < 10; ++a) {
-                spawnStarParticle(world, i, j, k);
+
+            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                itemstack.tag.setInteger("BlockId", tileEntity.blockId);
+            } else {
+                tileEntity.blockId = itemstack.tag.getInteger("BlockId");
+                for (int a = 0; a < 10; ++a) {
+                    spawnStarParticle(world, i, j, k);
+                }
+                world.playSoundEffect(i+.5, j+.5, k+.5, "step.snow", 1f, 1f);
+                world.markBlockAsNeedsUpdate(i, j, k);
+                world.notifyBlocksOfNeighborChange(i, j, k, id);
             }
-            world.playSoundEffect(i+.5, j+.5, k+.5, "step.snow", 1f, 1f);
-            world.markBlockAsNeedsUpdate(i, j, k);
-            world.notifyBlocksOfNeighborChange(i, j, k, id);
+
             return true;
         }
         if (block.renderAsNormalBlock()) {
