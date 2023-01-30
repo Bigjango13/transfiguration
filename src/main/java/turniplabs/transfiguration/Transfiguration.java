@@ -8,6 +8,7 @@ import net.minecraft.src.Material;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.helper.*;
+import turniplabs.halplibe.mixin.accessors.BlockAccessor;
 
 
 public class Transfiguration implements ModInitializer {
@@ -15,6 +16,9 @@ public class Transfiguration implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static final Block magicSand = BlockHelper.createBlock(MOD_ID, new BlockMagicSand(2000, Material.sand), "magicsand", "magic_sand.png", Block.soundSandFootstep, 2f, 0f, 0f);
+    static {
+        ((BlockAccessor) magicSand).callSetLightOpacity(magicSand.blockID);
+    }
     public static final Item transfigurationWand = ItemHelper.createItem(MOD_ID, new ItemTransfigurationWand(1500), "transfigurationwand", "transfiguration_wand.png");
     public static final Item colorWand = ItemHelper.createItem(MOD_ID, new ItemColorWand(1501), "colorwand", "color_wand.png");
 
