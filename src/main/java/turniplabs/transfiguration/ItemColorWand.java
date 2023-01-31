@@ -22,7 +22,7 @@ public class ItemColorWand extends Item {
             } else {
                 tileEntity.blockColor = itemstack.tag.getInteger("BlockColor");
                 for (int a = 0; a < 10; ++a) {
-                    spawnStarParticle(world, i, j, k);
+                    spawnRedStarParticle(world, i, j, k);
                 }
                 world.playSoundEffect(i+.5, j+.5, k+.5, "step.snow", 1f, 1f);
                 world.markBlockAsNeedsUpdate(i, j, k);
@@ -36,7 +36,7 @@ public class ItemColorWand extends Item {
         }
     }
 
-    public void spawnStarParticle(World world, int i, int j, int k) {
+    public static void spawnRedStarParticle(World world, int i, int j, int k) {
         double a = Math.random() - 0.5;
         double b = Math.random() - 0.5;
 

@@ -2,9 +2,6 @@ package turniplabs.transfiguration;
 
 import net.minecraft.src.*;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
-import java.awt.event.KeyEvent;
 
 public class ItemTransfigurationWand extends Item {
     public ItemTransfigurationWand(int i) {
@@ -25,7 +22,7 @@ public class ItemTransfigurationWand extends Item {
             } else {
                 tileEntity.blockId = itemstack.tag.getInteger("BlockId");
                 for (int a = 0; a < 10; ++a) {
-                    spawnStarParticle(world, i, j, k);
+                    spawnGoldenStarParticle(world, i, j, k);
                 }
                 world.playSoundEffect(i+.5, j+.5, k+.5, "step.snow", 1f, 1f);
                 world.markBlockAsNeedsUpdate(i, j, k);
@@ -42,7 +39,7 @@ public class ItemTransfigurationWand extends Item {
         return false;
     }
 
-    public void spawnStarParticle(World world, int i, int j, int k) {
+    public static void spawnGoldenStarParticle(World world, int i, int j, int k) {
         double a = Math.random() - 0.5;
         double b = Math.random() - 0.5;
 

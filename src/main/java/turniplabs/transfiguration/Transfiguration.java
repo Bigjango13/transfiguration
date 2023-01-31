@@ -21,6 +21,7 @@ public class Transfiguration implements ModInitializer {
     }
     public static final Item transfigurationWand = ItemHelper.createItem(MOD_ID, new ItemTransfigurationWand(1500), "transfigurationwand", "transfiguration_wand.png");
     public static final Item colorWand = ItemHelper.createItem(MOD_ID, new ItemColorWand(1501), "colorwand", "color_wand.png");
+    public static final Item buildersWand = ItemHelper.createItem(MOD_ID, new ItemBuildersWand(1502), "builderswand", "builders_wand.png");
 
     @Override
     public void onInitialize() {
@@ -28,6 +29,7 @@ public class Transfiguration implements ModInitializer {
         EntityHelper.createTileEntity(TileEntityMagicSand.class, "Magic");
         ParticleHelper.createParticle(EntityGoldenStarFX.class, "goldenstar");
         ParticleHelper.createParticle(EntityRedStarFX.class, "redstar");
+        ParticleHelper.createParticle(EntityBlueStarFX.class, "bluestar");
 
         RecipeHelper.Crafting.createRecipe(transfigurationWand, 1, new Object[]{"#N#", "NGN", "SN#", 'G', Item.dustGlowstone, 'N', Item.nuggetGold, 'S', Item.stick});
         RecipeHelper.Crafting.createRecipe(colorWand, 1, new Object[]{"#R#", "GDO", "SL#", 'R', Item.dustRedstone, 'G', Item.dustGlowstone, 'D', Item.diamond, 'O', Item.olivine, 'L', new ItemStack(Item.dye, 1, 4), 'S', Item.stick});

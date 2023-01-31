@@ -1,3 +1,8 @@
 item.transfiguration.transfigurationwand.name=Transfiguration Wand
+item.transfiguration.transfigurationwand.desc=Use on a block to transfer its texture to magic sand. Hold Shift and use to copy from another magic sand block.
 item.transfiguration.colorwand.name=Color Wand
+item.transfiguration.colorwand.desc=Use on a block to transfer its color to magic sand. Hold shift and use to copy from another magic sand block.
+item.transfiguration.builderswand.name=Builder's Wand
+item.transfiguration.builderswand.desc=Use on a block to mark the first position, hold Alt and use to mark the second position. Hold Ctrl and use on a block to fill in the area.
 tile.transfiguration.magicsand.name=Magic Sand
+tile.transfiguration.magicsand.desc=Ooh, shiny!
