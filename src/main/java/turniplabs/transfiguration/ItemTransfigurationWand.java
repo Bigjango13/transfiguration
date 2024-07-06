@@ -1,38 +1,45 @@
 package turniplabs.transfiguration;
 
-import net.minecraft.src.*;
+import net.minecraft.core.block.Block;
+import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.item.Item;
+import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.sound.SoundCategory;
+import net.minecraft.core.util.helper.Side;
+import net.minecraft.core.world.World;
 import org.lwjgl.input.Keyboard;
 
 public class ItemTransfigurationWand extends Item {
-    public ItemTransfigurationWand(int i) {
-        super(i);
+    public ItemTransfigurationWand(String name, int i) {
+        super(name, i);
     }
 
     @Override
-    public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, int i, int j, int k, int l, double heightPlaced) {
-        int id = world.getBlockId(i, j, k);
-
-        Block block = Block.getBlock(id);
+    public boolean onUseItemOnBlock(ItemStack itemstack, EntityPlayer entityplayer, World world, int x, int y, int z, Side side, double xPlaced, double yPlaced) {
+        Block block = world.getBlock(x, y, z);
 
         if (block instanceof BlockMagicSand) {
-            TileEntityMagicSand tileEntity = (TileEntityMagicSand) world.getBlockTileEntity(i, j, k);
+            TileEntityMagicSand tileEntity = (TileEntityMagicSand) world.getBlockTileEntity(x, y, z);
 
             if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                itemstack.tag.setInteger("BlockId", tileEntity.blockId);
+                itemstack.getData().putInt("BlockId", tileEntity.blockId);
+                itemstack.getData().putInt("Meta", world.getBlockMetadata(x, y, z));
             } else {
-                tileEntity.blockId = itemstack.tag.getInteger("BlockId");
+                tileEntity.blockId = itemstack.getData().getInteger("BlockId");
+                world.setBlockMetadata(x, y, z, itemstack.getData().getInteger("Meta"));
                 for (int a = 0; a < 10; ++a) {
-                    spawnGoldenStarParticle(world, i, j, k);
+                    spawnGoldenStarParticle(world, x, y, z);
                 }
-                world.playSoundEffect(i+.5, j+.5, k+.5, "step.snow", 1f, 1f);
-                world.markBlockAsNeedsUpdate(i, j, k);
-                world.notifyBlocksOfNeighborChange(i, j, k, id);
+                world.playSoundEffect(null, SoundCategory.WORLD_SOUNDS, x+.5, y+.5, z+.5, "step.snow", 1f, 1f);
+                world.markBlockNeedsUpdate(x, y, z);
+                world.notifyBlocksOfNeighborChange(x, y, z, block.id);
             }
 
             return true;
         }
         if (block.renderAsNormalBlock()) {
-            itemstack.tag.setInteger("BlockId", id);
+            itemstack.getData().putInt("BlockId", block.id);
+            itemstack.getData().putInt("Meta", world.getBlockMetadata(x, y, z));
             return true;
         }
 
@@ -82,6 +89,6 @@ public class ItemTransfigurationWand extends Item {
 
         }
 
-        world.spawnParticle("goldenstar", i+.5 + x, j+.5 + y, k+.5 + z, 0, 0, 0);
+        world.spawnParticle("goldenstar", i+.5 + x, j+.5 + y, k+.5 + z, 0, 0, 0, 0);
     }
 }

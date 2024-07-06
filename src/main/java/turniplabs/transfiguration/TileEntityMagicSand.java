@@ -1,23 +1,23 @@
 package turniplabs.transfiguration;
 
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.TileEntity;
+import com.mojang.nbt.CompoundTag;
+import net.minecraft.core.block.entity.TileEntity;
 
 public class TileEntityMagicSand extends TileEntity {
     public int blockId;
     public int blockColor;
 
     @Override
-    public void readFromNBT(NBTTagCompound nbttagcompound) {
-        super.readFromNBT(nbttagcompound);
-        this.blockId = nbttagcompound.getInteger("BlockId");
-        this.blockColor = nbttagcompound.getInteger("BlockColor");
+    public void readFromNBT(CompoundTag tag) {
+        super.readFromNBT(tag);
+        this.blockId = tag.getInteger("BlockId");
+        this.blockColor = tag.getInteger("BlockColor");
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbttagcompound) {
-        super.writeToNBT(nbttagcompound);
-        nbttagcompound.setInteger("BlockId", this.blockId);
-        nbttagcompound.setInteger("BlockColor", this.blockColor);
+    public void writeToNBT(CompoundTag tag) {
+        super.writeToNBT(tag);
+        tag.putInt("BlockId", this.blockId);
+        tag.putInt("BlockColor", this.blockColor);
     }
 }

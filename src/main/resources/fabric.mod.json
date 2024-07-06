@@ -19,6 +19,15 @@
   "entrypoints": {
     "main": [
       "turniplabs.transfiguration.Transfiguration"
+    ],
+    "beforeGameStart": [
+      "turniplabs.transfiguration.Transfiguration"
+    ],
+    "afterGameStart": [
+      "turniplabs.transfiguration.Transfiguration"
+    ],
+    "recipesReady": [
+      "turniplabs.transfiguration.Transfiguration"
     ]
   },
   "mixins": [

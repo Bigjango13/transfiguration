@@ -1,38 +1,40 @@
 package turniplabs.transfiguration;
 
-import net.minecraft.src.*;
+import net.minecraft.client.render.block.color.BlockColorDispatcher;
+import net.minecraft.client.render.block.model.BlockModelDispatcher;
+import net.minecraft.client.render.stitcher.IconCoordinate;
+import net.minecraft.core.block.Block;
+import net.minecraft.core.block.BlockTileEntity;
+import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.block.material.Material;
+import net.minecraft.core.util.helper.Side;
+import net.minecraft.core.world.World;
+import net.minecraft.core.world.WorldSource;
 
-public class BlockMagicSand extends BlockContainer {
-    public BlockMagicSand(int i, Material material) {
-        super(i, material);
+public class BlockMagicSand extends BlockTileEntity {
+    public BlockMagicSand(String key, int id, Material material) {
+            super(key, id, material);
     }
 
     @Override
-    protected TileEntity getBlockEntity() {
+    protected TileEntity getNewBlockEntity() {
         return new TileEntityMagicSand();
     }
 
-    @Override
-    public boolean isOpaqueCube() {
-        return false;
-    }
-
-    @Override
-    public int colorMultiplier(World world, IBlockAccess iblockaccess, int i, int j, int k) {
-        TileEntityMagicSand tileEntity = (TileEntityMagicSand) iblockaccess.getBlockTileEntity(i, j, k);
+    public int getWorldColor(WorldSource worldSource, int x, int y, int z, int defaultColor) {
+        TileEntityMagicSand tileEntity = (TileEntityMagicSand) worldSource.getBlockTileEntity(x, y, z);
         if (tileEntity.blockColor == 0) {
-            return super.colorMultiplier(world, iblockaccess, i, j, k);
+            return defaultColor;
         }
         return tileEntity.blockColor;
     }
 
-    @Override
-    public int getBlockTexture(IBlockAccess iblockaccess, int i, int j, int k, int l) {
-        TileEntityMagicSand tileEntity = (TileEntityMagicSand) iblockaccess.getBlockTileEntity(i, j, k);
+    public IconCoordinate getBlockTexture(WorldSource worldSource, int x, int y, int z, Side side, IconCoordinate defaultIcon) {
+        TileEntityMagicSand tileEntity = (TileEntityMagicSand) worldSource.getBlockTileEntity(x, y, z);
         Block block = getBlock(tileEntity.blockId);
-        if (block == null) {
-            return super.getBlockTexture(iblockaccess, i, j, k, l);
+        if (block == null || block instanceof BlockMagicSand) {
+            return defaultIcon;
         }
-        return block.getBlockTexture(iblockaccess, i, j, k, l);
+        return BlockModelDispatcher.getInstance().getDispatch(block).getBlockTexture(worldSource, x, y, z, side);
     }
 }

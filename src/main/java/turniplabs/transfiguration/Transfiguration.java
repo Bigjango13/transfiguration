@@ -1,38 +1,88 @@
 package turniplabs.transfiguration;
 
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.src.Block;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Material;
+import net.minecraft.core.block.Block;
+import net.minecraft.core.block.material.Material;
+import net.minecraft.core.item.Item;
+import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.sound.BlockSounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.helper.*;
-import turniplabs.halplibe.mixin.accessors.BlockAccessor;
+import turniplabs.halplibe.helper.recipeBuilders.RecipeBuilderShapeless;
+import turniplabs.halplibe.helper.recipeBuilders.RecipeBuilderShaped;
+import turniplabs.halplibe.util.GameStartEntrypoint;
+import turniplabs.halplibe.util.RecipeEntrypoint;
 
 
-public class Transfiguration implements ModInitializer {
+public class Transfiguration implements ModInitializer, GameStartEntrypoint, RecipeEntrypoint {
     public static final String MOD_ID = "transfiguration";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    public static final Block magicSand = BlockHelper.createBlock(MOD_ID, new BlockMagicSand(2000, Material.sand), "magicsand", "magic_sand.png", Block.soundSandFootstep, 2f, 0f, 0f);
-    static {
-        ((BlockAccessor) magicSand).callSetLightOpacity(magicSand.blockID);
-    }
-    public static final Item transfigurationWand = ItemHelper.createItem(MOD_ID, new ItemTransfigurationWand(1500), "transfigurationwand", "transfiguration_wand.png");
-    public static final Item colorWand = ItemHelper.createItem(MOD_ID, new ItemColorWand(1501), "colorwand", "color_wand.png");
-    public static final Item buildersWand = ItemHelper.createItem(MOD_ID, new ItemBuildersWand(1502), "builderswand", "builders_wand.png");
+    public static Block magicSand;
+    public static Item transfigurationWand;
+    public static Item colorWand;
+    public static Item buildersWand;
 
     @Override
     public void onInitialize() {
         LOGGER.info("Transfiguration initialized.");
-        EntityHelper.createTileEntity(TileEntityMagicSand.class, "Magic");
-        ParticleHelper.createParticle(EntityGoldenStarFX.class, "goldenstar");
-        ParticleHelper.createParticle(EntityRedStarFX.class, "redstar");
-        ParticleHelper.createParticle(EntityBlueStarFX.class, "bluestar");
+    }
 
-        RecipeHelper.Crafting.createRecipe(transfigurationWand, 1, new Object[]{"#N#", "NGN", "SN#", 'G', Item.dustGlowstone, 'N', Item.nuggetGold, 'S', Item.stick});
-        RecipeHelper.Crafting.createRecipe(colorWand, 1, new Object[]{"#R#", "GDO", "SL#", 'R', Item.dustRedstone, 'G', Item.dustGlowstone, 'D', Item.diamond, 'O', Item.olivine, 'L', new ItemStack(Item.dye, 1, 4), 'S', Item.stick});
-        RecipeHelper.Crafting.createShapelessRecipe(magicSand, 1, new Object[]{Block.sand, Item.dustGlowstone});
+    @Override
+    public void beforeGameStart() {
+        int baseId = 22657;
+        int sandId = 6273;
+        magicSand = new BlockBuilder(MOD_ID)
+            .setBlockModel(block -> new BlockModelMagicSand<>(block)
+                .withTextures("transfiguration:block/magic_sand")
+            )
+            .setBlockColor(block -> new BlockColorMagicSand())
+            .setBlockSound(BlockSounds.SAND)
+            .build(new BlockMagicSand("magicsand", sandId, Material.sand));
+        transfigurationWand = new ItemBuilder(MOD_ID)
+            .setIcon("transfiguration:item/transfiguration_wand")
+            .build(new ItemTransfigurationWand("transfigurationwand", baseId++));
+        colorWand = new ItemBuilder(MOD_ID)
+            .setIcon("transfiguration:item/color_wand")
+            .build(new ItemColorWand("colorwand", baseId++));
+        buildersWand = new ItemBuilder(MOD_ID)
+            .setIcon("transfiguration:item/builders_wand")
+            .build(new ItemBuildersWand("builderswand", baseId++));
+
+
+        EntityHelper.createTileEntity(TileEntityMagicSand.class, "MagicSand");
+        ParticleHelper.createParticle("goldenstar", (world, x, y, z, motionX, motionY, motionZ, data) -> new EntityRBGStarFX(world, x, y, z, motionX, motionY, motionZ, "transfiguration:particle/goldenstar"));
+        ParticleHelper.createParticle("bluestar", (world, x, y, z, motionX, motionY, motionZ, data) -> new EntityRBGStarFX(world, x, y, z, motionX, motionY, motionZ, "transfiguration:particle/bluestar"));
+        ParticleHelper.createParticle("redstar", (world, x, y, z, motionX, motionY, motionZ, data) -> new EntityRBGStarFX(world, x, y, z, motionX, motionY, motionZ, "transfiguration:particle/redstar"));
+    }
+
+    @Override
+    public void afterGameStart() {
+    }
+
+    @Override
+    public void onRecipesReady() {
+        new RecipeBuilderShaped(MOD_ID, " N ", "NGN", "SN ")
+            .addInput('G', Item.dustGlowstone)
+            .addInput('N', Item.ingotGold)
+            .addInput('S', Item.stick)
+            .create("transfigurationWand", new ItemStack(transfigurationWand, 1));
+        new RecipeBuilderShaped(MOD_ID, " R ", "GDO", "SL ")
+            .addInput('R', Item.dustRedstone)
+            .addInput('G', Item.dustGlowstone)
+            .addInput('D', Item.diamond)
+            .addInput('O', Item.olivine)
+            .addInput('L', new ItemStack(Item.dye, 1, 4))
+            .addInput('S', Item.stick)
+            .create("colorWand", new ItemStack(colorWand, 1));
+        new RecipeBuilderShapeless(MOD_ID)
+            .addInput(Block.sand)
+            .addInput(Item.dustGlowstone)
+            .create("magicSand", new ItemStack(magicSand, 1));
+    }
+
+    @Override
+    public void initNamespaces() {
     }
 }
